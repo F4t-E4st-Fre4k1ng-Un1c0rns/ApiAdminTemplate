@@ -310,7 +310,7 @@ INSERT INTO public.clients (id, client_type, phone, password, manager_id, first_
 -- Data for Name: managers; Type: TABLE DATA; Schema: public; Owner: hello
 --
 
-INSERT INTO public.managers (role, first_name, second_name, phone, email, password, id) VALUES ('manager', '1', '1', '1', '1@gmail.com', '$2b$12$RvdIgjtAphGXMjGcXY6RG.kC.Th83/bZ3AzjVm.SDUFDPxHgJYeJ.', 1);
+INSERT INTO public.managers (role, first_name, second_name, phone, email, password, id) VALUES ('admin', '1', '1', '1', '1@gmail.com', '$2b$12$RvdIgjtAphGXMjGcXY6RG.kC.Th83/bZ3AzjVm.SDUFDPxHgJYeJ.', 1);
 
 
 --
