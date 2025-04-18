@@ -1,0 +1,30 @@
+name: Docker Compose Action
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create SSH key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          command_timeout: 10m
+          timeout: 2m
+          script: |
+            cd /home/matv864
+            date >> ci_cd_notes.txt
+            cd mpit-site
+            git restore .
+            git pull
+            docker compose up -d --build
