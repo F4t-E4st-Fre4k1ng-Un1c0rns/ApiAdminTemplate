@@ -1,0 +1,28 @@
+# python generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.idea
+# venv
+.venv
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ruff
+.ruff_cache/
+
+# rye
+requirements-dev.lock
+
+# evironment
+*.env
+db.yaml
+
+# object storage
+dumps/minio/*

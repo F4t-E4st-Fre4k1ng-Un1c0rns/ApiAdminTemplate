@@ -1,0 +1,52 @@
+[project]
+name = "backend-template"
+version = "0.1.0"
+description = "FastAPI template for hackathons from BeaverNotACat"
+readme = "README.md"
+requires-python = ">=3.12.4"
+dependencies = [
+    "advanced-alchemy>=1.2.0",
+    "dependency-injector>=4.46.0",
+    "fastapi>=0.115.12",
+    "granian[reload]>=2.2.4",
+    "httpx>=0.28.1",
+    "psycopg[binary]>=3.2.6",
+    "pydantic-settings>=2.8.1",
+    "pydantic[email]>=2.11.3",
+    "pyjwt>=2.10.1",
+    "alembic>=1.13.2",
+    "aioboto3>=13.1.1",
+    "asyncpg>=0.29.0",
+    "fastadmin>=0.2.13",
+    "bcrypt>=4.2.0",
+    "passlib>=1.7.4",
+    "aiosmtplib>=3.0.2",
+    "smtplibaio>=2.1.2.post1",
+    "types-beautifulsoup4>=4.12.0.20250204",
+    "isort>=6.0.1",
+    "ruff>=0.11.6",
+    "mypy>=1.15.0",
+    "jinja2>=3.1.6",
+    "beautifulsoup4>=4.13.4",
+]
+
+
+[dependency-groups]
+dev = [
+    "mypy>=1.15.0",
+    "ruff>=0.11.5",
+]
+
+[tool.mypy]
+follow_untyped_imports = true
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "SIM",
+    "I",
+]

@@ -1,0 +1,101 @@
+name: hackaton-backend
+
+services:
+  backend:
+    container_name: backend
+    restart: always
+    build: .
+    env_file: .env
+    ports:
+      - 8000:8000
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_TOKEN_LIFETIME: ${JWT_TOKEN_LIFETIME}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+      S3_USER_HOST: ${S3_USER_HOST}
+      S3_API_HOST: ${S3_API_HOST}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME}
+
+      ADMIN_USER_MODEL: ${ADMIN_USER_MODEL}
+      ADMIN_USER_MODEL_USERNAME_FIELD: ${ADMIN_USER_MODEL_USERNAME_FIELD}
+      ADMIN_SECRET_KEY: ${ADMIN_SECRET_KEY}
+
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_LOGIN: ${MAIL_LOGIN}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      
+
+  database:
+    container_name: database
+    restart: always
+    image: postgres:latest
+    env_file: .env
+    volumes:
+      - ./dumps/testing.sql:/docker-entrypoint-initdb.d/testing.sql
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -d udom
+      interval: 60s
+      start_period: 1s
+      timeout: 600s
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+  s3:
+    container_name: s3
+    restart: always
+    image: minio/minio
+    env_file: .env
+    command: |
+      server --console-address ":9001" /data
+    volumes:
+      - s3-data:/data
+    healthcheck:
+      test: mc ready local
+      interval: 60s
+      start_period: 1s
+      timeout: 600s
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+  
+  s3-setup:
+    image: minio/mc
+    env_file: .env
+    depends_on:
+      s3:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME}
+    entrypoint:
+      /bin/sh -c "
+      /usr/bin/mc alias set s3service http://s3:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD;
+      /usr/bin/mc mb s3service/$$S3_BUCKET_NAME;
+      /usr/bin/mc anonymous set download s3service/$$S3_BUCKET_NAME;
+      /usr/bin/mc admin user svcacct add --access-key "$$S3_ACCESS_KEY" --secret-key "$$S3_SECRET_KEY" s3service $$MINIO_ROOT_USER;
+      exit 0;
+      "
+
+volumes:
+  s3-data:
+    name: s3-data
+  postgres-data:
+    name: postgres-data

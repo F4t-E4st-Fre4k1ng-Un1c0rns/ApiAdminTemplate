@@ -1,0 +1,31 @@
+# python generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# venv
+.venv
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ruff
+.ruff_cache/
+
+# rye
+requirements-dev.lock
+
+# Docker compose
+compose.yaml
+compose-dev.yaml
+
+# minio and db dump
+dumps
+
+# env (pass it thru compose)
+.env
